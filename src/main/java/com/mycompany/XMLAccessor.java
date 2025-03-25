@@ -93,11 +93,23 @@ public class XMLAccessor extends Accessor {
         NamedNodeMap attributes = item.getAttributes();
         String leveltext = attributes.getNamedItem(LEVEL).getTextContent();
         String type = attributes.getNamedItem(KIND).getTextContent();
+        String content = item.getTextContent();
+
         try {
-            slide.append(new SlideItemFactory().createSlideItem(leveltext,type,item.getTextContent()));
+            SlideItemFactory factory;
+
+            if ("text".equalsIgnoreCase(type)) {
+                factory = new TextItemFactory();
+            } else if ("image".equalsIgnoreCase(type)) {
+                factory = new BitmapFactory();
+            } else {
+                throw new IOException(UNKNOWNTYPE);
+            }
+
+            slide.append(factory.createSlideItem(leveltext, content));
         } catch (NumberFormatException e) {
             System.err.println(NFE);
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(UNKNOWNTYPE);
         }
     }
