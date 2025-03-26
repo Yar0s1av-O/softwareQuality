@@ -26,7 +26,7 @@ public class BitmapItem extends SlideItem {
         this.imageName = name;
 
         if (name == null || name.trim().isEmpty()) {
-            System.err.println("⚠️ Image name is empty");
+            System.err.println("Image name is empty");
             return;
         }
 
