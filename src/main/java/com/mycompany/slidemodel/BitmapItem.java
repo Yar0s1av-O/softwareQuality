@@ -2,21 +2,16 @@ package com.mycompany.slidemodel;
 
 import com.mycompany.Style;
 
-import java.awt.Rectangle;
-import java.awt.Graphics;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-
-import javax.imageio.ImageIO;
-
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * <p>De klasse voor een Bitmap item</p>
+ * <p>The class for a Bitmap item</p>
  * <p>Bitmap items have the responsibility to draw themselves.</p>
- *
- * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
- * @version 1.6 2014/05/16 Sylvia Stuurman
  */
 
 public class BitmapItem extends SlideItem {
@@ -26,45 +21,63 @@ public class BitmapItem extends SlideItem {
     protected static final String FILE = "File ";
     protected static final String NOTFOUND = " not found";
 
-    // level is equal to item-level; name is the name of the file with the Image
     public BitmapItem(int level, String name) {
         super(level);
-        imageName = name;
-        try {
-            this.bufferedImage = ImageIO.read(getClass().getResourceAsStream("/" + name));
+        this.imageName = name;
 
-            //bufferedImage = ImageIO.read(new File(imageName));
+        if (name == null || name.trim().isEmpty()) {
+            System.err.println("⚠️ Image name is empty");
+            return;
+        }
+
+        try {
+            InputStream imageStream = getClass().getResourceAsStream("/" + name);
+            if (imageStream == null) {
+                System.err.println(FILE + name + NOTFOUND);
+                return;
+            }
+
+            this.bufferedImage = ImageIO.read(imageStream);
         } catch (IOException e) {
-            System.err.println(FILE + imageName + NOTFOUND);
+            System.err.println(FILE + name + NOTFOUND);
         }
     }
 
-    // An empty bitmap-item
     public BitmapItem() {
         this(0, null);
     }
 
-    // give the filename of the image
     public String getName() {
         return imageName;
     }
 
-    // give the  bounding box of the image
     @Override
     public Rectangle getBoundingBox(Graphics g, ImageObserver observer, float scale, Style myStyle) {
-        return new Rectangle((int) (myStyle.indent * scale), 0,
+        if (bufferedImage == null) {
+            return new Rectangle(0, 0, 0, 0);
+        }
+
+        return new Rectangle(
+                (int) (myStyle.indent * scale),
+                0,
                 (int) (bufferedImage.getWidth(observer) * scale),
-                ((int) (myStyle.leading * scale)) +
-                        (int) (bufferedImage.getHeight(observer) * scale));
+                (int) (myStyle.leading * scale) + (int) (bufferedImage.getHeight(observer) * scale)
+        );
     }
 
-    // draw the image
     @Override
     public void draw(int x, int y, float scale, Graphics g, Style myStyle, ImageObserver observer) {
-        int width = x + (int) (myStyle.indent * scale);
-        int height = y + (int) (myStyle.leading * scale);
-        g.drawImage(bufferedImage, width, height, (int) (bufferedImage.getWidth(observer) * scale),
-                (int) (bufferedImage.getHeight(observer) * scale), observer);
+        if (bufferedImage == null) {
+            return; // don't try to draw if the image didn't load
+        }
+
+        int drawX = x + (int) (myStyle.indent * scale);
+        int drawY = y + (int) (myStyle.leading * scale);
+
+        g.drawImage(bufferedImage, drawX, drawY,
+                (int) (bufferedImage.getWidth(observer) * scale),
+                (int) (bufferedImage.getHeight(observer) * scale),
+                observer);
     }
 
     @Override
