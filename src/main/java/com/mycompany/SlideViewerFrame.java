@@ -1,5 +1,7 @@
 package com.mycompany;
 
+import com.mycompany.commands.CommandInvoker;
+
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
@@ -41,7 +43,8 @@ public class SlideViewerFrame extends JFrame {
 			});
 		getContentPane().add(slideViewerComponent);
 		addKeyListener(new KeyController(presentation)); // add a controller
-		setMenuBar(new MenuController(this, presentation));	// add another controller
+		CommandInvoker invoker = new CommandInvoker();
+		setMenuBar(new MenuController(this, presentation, invoker));
 		setSize(new Dimension(WIDTH, HEIGHT)); // Same sizes as Slide has.
 		setVisible(true);
 	}

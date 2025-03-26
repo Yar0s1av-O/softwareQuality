@@ -1,13 +1,11 @@
 package com.mycompany.commands;
 
 import com.mycompany.Presentation;
-import com.mycompany.PresentationFileManager;
-import com.mycompany.commands.Command;
-
-import java.awt.Frame;
+import com.mycompany.XMLAccessor;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import javax.swing.JOptionPane;
 
 public class OpenPresentationCommand implements Command {
     private final Presentation presentation;
@@ -20,12 +18,22 @@ public class OpenPresentationCommand implements Command {
 
     @Override
     public void execute() {
-        try {
-            PresentationFileManager.loadPresentation(presentation, "test.xml");
-        } catch (IOException | URISyntaxException exc) {
-            JOptionPane.showMessageDialog(parent, "IO Exception: " + exc,
-                    "Load Error", JOptionPane.ERROR_MESSAGE);
-            exc.printStackTrace(); // Optional: helps with debugging
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Open JabberPoint Presentation");
+        int result = fileChooser.showOpenDialog(parent);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                new XMLAccessor().loadFile(presentation, selectedFile.getAbsolutePath());
+                presentation.setSlideNumber(0);
+                parent.repaint(); //  necessary to display
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(parent,
+                        "Failed to open file: " + e.getMessage(),
+                        "Open Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         }
     }
 }
