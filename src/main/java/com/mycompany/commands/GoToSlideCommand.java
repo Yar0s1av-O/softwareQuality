@@ -7,22 +7,19 @@ import com.mycompany.Presentation;
 import java.awt.Frame;
 import javax.swing.JOptionPane;
 
-public class GoToSlideCommand implements Command {
+public class GoToSlideCommand implements Command
+{
     private Presentation presentation;
-    private Frame parent;
+    private int slideNumber;
 
-    public GoToSlideCommand(Presentation presentation, Frame parent) {
+    public GoToSlideCommand(Presentation presentation, int slideNumber) {
         this.presentation = presentation;
-        this.parent = parent;
+        this.slideNumber = slideNumber;
     }
 
     @Override
     public void execute() {
-        String pageNumberStr = JOptionPane.showInputDialog(parent, "Page number?");
-        if (pageNumberStr != null && !pageNumberStr.isEmpty()) {
-            int pageNumber = Integer.parseInt(pageNumberStr);
-            presentation.setSlideNumber(pageNumber - 1);
-        }
+        presentation.setSlideNumber(slideNumber);
     }
 }
 
