@@ -3,30 +3,17 @@ package com.mycompany;
 import com.mycompany.commands.Command;
 import com.mycompany.commands.GoToSlideCommand;
 
-import java.awt.MenuBar;
-import java.awt.Frame;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.MenuShortcut;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
-/** <p>The controller for the menu</p>
- * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
- * @version 1.1 2002/12/17 Gert Florijn
- * @version 1.2 2003/11/19 Sylvia Stuurman
- * @version 1.3 2004/08/17 Sylvia Stuurman
- * @version 1.4 2007/07/16 Sylvia Stuurman
- * @version 1.5 2010/03/03 Sylvia Stuurman
- * @version 1.6 2014/05/16 Sylvia Stuurman
- */
 public class MenuController extends MenuBar {
 
-	private Frame parent; // the frame, only used as parent for the Dialogs
-	private Presentation presentation; // Commands are given to the presentation
+	private final Frame parent;
+	private final Presentation presentation;
 
 	private static final long serialVersionUID = 227L;
 
@@ -43,7 +30,6 @@ public class MenuController extends MenuBar {
 	protected static final String SAVE = "Save";
 	protected static final String VIEW = "View";
 
-	protected static final String TESTFILE = "test.xml";
 	protected static final String SAVEFILE = "dump.xml";
 
 	protected static final String IOEX = "IO Exception: ";
@@ -51,91 +37,97 @@ public class MenuController extends MenuBar {
 	protected static final String SAVEERR = "Save Error";
 
 	public MenuController(Frame frame, Presentation pres) {
-		parent = frame;
-		presentation = pres;
+		this.parent = frame;
+		this.presentation = pres;
+
 		MenuItem menuItem;
+
+		// --- File Menu ---
 		Menu fileMenu = new Menu(FILE);
+
+		// Open
 		fileMenu.add(menuItem = mkMenuItem(OPEN));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				presentation.clear();
-				Accessor xmlAccessor = new XMLAccessor();
+		menuItem.addActionListener(actionEvent -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Open JabberPoint Presentation");
+
+			int result = fileChooser.showOpenDialog(parent);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
 				try {
-					xmlAccessor.loadFile(presentation, TESTFILE);
+					new XMLAccessor().loadFile(presentation, selectedFile.getAbsolutePath());
 					presentation.setSlideNumber(0);
-				} catch (IOException exc) {
-					JOptionPane.showMessageDialog(parent, IOEX + exc,
-							LOADERR, JOptionPane.ERROR_MESSAGE);
+					parent.repaint();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(parent,
+							"Failed to open file: " + e.getMessage(),
+							"File Error",
+							JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
 				}
-				parent.repaint();
 			}
-		} );
+		});
+
+		// New
 		fileMenu.add(menuItem = mkMenuItem(NEW));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				presentation.clear();
-				parent.repaint();
-			}
+		menuItem.addActionListener(actionEvent -> {
+			presentation.clear();
+			parent.repaint();
 		});
+
+		// Save
 		fileMenu.add(menuItem = mkMenuItem(SAVE));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Accessor xmlAccessor = new XMLAccessor();
-				try {
-					xmlAccessor.saveFile(presentation, SAVEFILE);
-				} catch (IOException exc) {
-					JOptionPane.showMessageDialog(parent, IOEX + exc,
-							SAVEERR, JOptionPane.ERROR_MESSAGE);
-				}
+		menuItem.addActionListener(actionEvent -> {
+			try {
+				new XMLAccessor().saveFile(presentation, SAVEFILE);
+			} catch (IOException exc) {
+				JOptionPane.showMessageDialog(parent, IOEX + exc,
+						SAVEERR, JOptionPane.ERROR_MESSAGE);
 			}
 		});
+
 		fileMenu.addSeparator();
+
+		// Exit
 		fileMenu.add(menuItem = mkMenuItem(EXIT));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				presentation.exit(0);
-			}
-		});
+		menuItem.addActionListener(actionEvent -> presentation.exit(0));
+
 		add(fileMenu);
+
+		// --- View Menu ---
 		Menu viewMenu = new Menu(VIEW);
+
+		// Next
 		viewMenu.add(menuItem = mkMenuItem(NEXT));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				presentation.nextSlide();
-			}
-		});
+		menuItem.addActionListener(actionEvent -> presentation.nextSlide());
+
+		// Prev
 		viewMenu.add(menuItem = mkMenuItem(PREV));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				presentation.prevSlide();
-			}
-		});
+		menuItem.addActionListener(actionEvent -> presentation.prevSlide());
+
+		// Go To
 		viewMenu.add(menuItem = mkMenuItem(GOTO));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				String pageNumberStr = JOptionPane.showInputDialog((Object)PAGENR);
-				try {
-					int pageNumber = Integer.parseInt(pageNumberStr);
-					Command goTo = new GoToSlideCommand(presentation, pageNumber - 1);
-					goTo.execute();
-				} catch (NumberFormatException e) {
-					JOptionPane.showMessageDialog(parent, "Invalid number!", "Error", JOptionPane.ERROR_MESSAGE);
-				}
+		menuItem.addActionListener(actionEvent -> {
+			String pageNumberStr = JOptionPane.showInputDialog(parent, PAGENR);
+			try {
+				int pageNumber = Integer.parseInt(pageNumberStr);
+				Command goTo = new GoToSlideCommand(presentation, pageNumber - 1);
+				goTo.execute();
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(parent, "Invalid number!", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 
 		add(viewMenu);
+
+		// --- Help Menu ---
 		Menu helpMenu = new Menu(HELP);
 		helpMenu.add(menuItem = mkMenuItem(ABOUT));
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				AboutBox.show(parent);
-			}
-		});
-		setHelpMenu(helpMenu);		// needed for portability (Motif, etc.).
+		menuItem.addActionListener(actionEvent -> AboutBox.show(parent));
+		setHelpMenu(helpMenu);
 	}
 
-	// create a menu item
+	// Utility: create menu item with shortcut
 	public MenuItem mkMenuItem(String name) {
 		return new MenuItem(name, new MenuShortcut(name.charAt(0)));
 	}

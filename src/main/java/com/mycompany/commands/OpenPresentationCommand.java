@@ -1,22 +1,17 @@
 package com.mycompany.commands;
 
-// Concrete Command: OpenPresentationCommand
-import com.mycompany.Accessor;
 import com.mycompany.Presentation;
-import com.mycompany.XMLAccessor;
+import com.mycompany.PresentationFileManager;
 import com.mycompany.commands.Command;
 
 import java.awt.Frame;
 import java.io.IOException;
-import java.net.URL;
-import javax.swing.JOptionPane;
-import java.net.URL;
 import java.net.URISyntaxException;
-
+import javax.swing.JOptionPane;
 
 public class OpenPresentationCommand implements Command {
-    private Presentation presentation;
-    private Frame parent;
+    private final Presentation presentation;
+    private final Frame parent;
 
     public OpenPresentationCommand(Presentation presentation, Frame parent) {
         this.presentation = presentation;
@@ -25,22 +20,12 @@ public class OpenPresentationCommand implements Command {
 
     @Override
     public void execute() {
-        Accessor xmlAccessor = new XMLAccessor();
         try {
-            presentation.clear();
-
-            URL url = getClass().getClassLoader().getResource("test.xml");
-            if (url == null) {
-                throw new IOException("test.xml not found in resources");
-            }
-
-            String path = new java.io.File(url.toURI()).getAbsolutePath();
-            xmlAccessor.loadFile(presentation, path);
-            presentation.setSlideNumber(0);
+            PresentationFileManager.loadPresentation(presentation, "test.xml");
         } catch (IOException | URISyntaxException exc) {
             JOptionPane.showMessageDialog(parent, "IO Exception: " + exc,
                     "Load Error", JOptionPane.ERROR_MESSAGE);
+            exc.printStackTrace(); // Optional: helps with debugging
         }
     }
-
 }

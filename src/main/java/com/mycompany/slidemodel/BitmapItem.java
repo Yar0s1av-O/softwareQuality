@@ -31,7 +31,8 @@ public class BitmapItem extends SlideItem {
         super(level);
         imageName = name;
         try {
-            this.bufferedImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imageName));
+            this.bufferedImage = ImageIO.read(getClass().getResourceAsStream("/" + name));
+
             //bufferedImage = ImageIO.read(new File(imageName));
         } catch (IOException e) {
             System.err.println(FILE + imageName + NOTFOUND);
