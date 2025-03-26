@@ -1,5 +1,6 @@
 package com.mycompany;
 
+import com.mycompany.io.SlideItemLoader;
 import com.mycompany.slidemodel.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -31,41 +32,36 @@ public class XMLAccessor extends Accessor {
                 Element slideElement = (Element) slides.item(i);
                 Slide slide = new Slide();
                 slide.setTitle(getTextContent(slideElement, SLIDETITLE));
-                loadSlideItems(slide, slideElement);
+
+                NodeList slideItems = slideElement.getElementsByTagName(ITEM);
+                for (int j = 0; j < slideItems.getLength(); j++) {
+                    Element item = (Element) slideItems.item(j);
+                    loadSlideItem(slide, item);
+                }
+
                 presentation.append(slide);
             }
+
 
         } catch (ParserConfigurationException | SAXException e) {
             throw new IOException("Error parsing XML: " + e.getMessage());
         }
     }
 
-    private void loadSlideItems(Slide slide, Element slideElement) {
-        NodeList items = slideElement.getElementsByTagName(ITEM);
+    protected void loadSlideItem(Slide slide, Element item) {
+        NamedNodeMap attributes = item.getAttributes();
+        String leveltext = attributes.getNamedItem("level").getTextContent();
+        String type = attributes.getNamedItem("kind").getTextContent();
+        String content = item.getTextContent();
 
-        for (int i = 0; i < items.getLength(); i++) {
-            Element item = (Element) items.item(i);
-            String kind = item.getAttribute(KIND);
-            String levelText = item.getAttribute(LEVEL);
-            String content = item.getTextContent();
-
-            try {
-                SlideItem slideItem = null;
-
-                if (kind.equals("text")) {
-                    slideItem = new TextItem(Integer.parseInt(levelText), content);
-                } else if (kind.equals("image")) {
-                    slideItem = new BitmapItem(Integer.parseInt(levelText), content);
-                }
-
-                if (slideItem != null) {
-                    slide.append(slideItem);
-                }
-            } catch (Exception e) {
-                System.out.println("Error loading slide item: " + e.getMessage());
-            }
+        try {
+            SlideItem slideItem = SlideItemLoader.loadSlideItem(type, leveltext, content);
+            slide.append(slideItem);
+        } catch (IOException e) {
+            System.err.println("Failed to load slide item: " + e.getMessage());
         }
     }
+
 
     private String getTextContent(Element parent, String tagName) {
         NodeList nodes = parent.getElementsByTagName(tagName);
