@@ -1,13 +1,11 @@
 package com.mycompany;
 
 import com.mycompany.slidemodel.Slide;
-import java.util.ArrayList;
 
 public class Presentation implements MyPublisher {
     private String showTitle;
-    private ArrayList<Slide> showList;
+    private final SlideManager slideManager = new SlideManager();
     private final PresentationObserverManager observerManager = new PresentationObserverManager();
-    private SlideNavigator navigator;
 
     public Presentation() {
         clear();
@@ -19,7 +17,7 @@ public class Presentation implements MyPublisher {
     }
 
     public int getSize() {
-        return showList.size();
+        return slideManager.getSize();
     }
 
     public String getTitle() {
@@ -31,45 +29,43 @@ public class Presentation implements MyPublisher {
     }
 
     public int getSlideNumber() {
-        return navigator.getCurrentIndex();
+        return slideManager.getCurrentIndex();
     }
 
     public void setSlideNumber(int number) {
-        navigator.setCurrentIndex(number);
+        slideManager.setCurrentIndex(number);
         notifyObservers();
     }
 
     public void prevSlide() {
-        if (navigator.hasPrevious()) {
-            navigator.previous();
+        if (slideManager.hasPrevious()) {
+            slideManager.prevSlide();
             notifyObservers();
         }
     }
 
     public void nextSlide() {
-        if (navigator.hasNext()) {
-            navigator.next();
+        if (slideManager.hasNext()) {
+            slideManager.nextSlide();
             notifyObservers();
         }
     }
 
     public void clear() {
-        showList = new ArrayList<>();
-        navigator = new SlideNavigator(showList);
-        setSlideNumber(-1); // this also triggers notifyObservers
+        slideManager.clear();
+        setSlideNumber(-1); // Triggers notifyObservers
     }
 
     public void append(Slide slide) {
-        showList.add(slide);
+        slideManager.addSlide(slide);
     }
 
     public Slide getSlide(int number) {
-        if (number < 0 || number >= getSize()) return null;
-        return showList.get(number);
+        return slideManager.getSlide(number);
     }
 
     public Slide getCurrentSlide() {
-        return navigator.getCurrentSlide();
+        return slideManager.getCurrentSlide();
     }
 
     public void exit(int n) {
