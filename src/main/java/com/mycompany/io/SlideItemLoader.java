@@ -4,16 +4,23 @@ import com.mycompany.slidemodel.*;
 
 import java.io.IOException;
 
-public class SlideItemLoader {
+public class SlideItemLoader
+{
 
-    public static SlideItem loadSlideItem(String type, String leveltext, String content) throws IOException {
+    public static SlideItem loadSlideItem(String type, String leveltext, String content) throws IOException
+    {
         SlideItemFactory factory;
 
-        if ("text".equalsIgnoreCase(type)) {
+        if ("text".equalsIgnoreCase(type))
+        {
             factory = new TextItemFactory();
-        } else if ("image".equalsIgnoreCase(type)) {
+        }
+        else if ("image".equalsIgnoreCase(type))
+        {
             factory = new BitmapFactory();
-        } else {
+        }
+        else
+        {
             throw new IOException("Unknown Element type: " + type);
         }
 

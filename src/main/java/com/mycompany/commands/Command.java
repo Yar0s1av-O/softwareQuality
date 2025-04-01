@@ -1,6 +1,6 @@
 package com.mycompany.commands;
 
-// Command interface
-public interface Command {
+public interface Command
+{
     void execute();
 }

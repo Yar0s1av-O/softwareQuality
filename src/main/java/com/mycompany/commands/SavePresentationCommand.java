@@ -2,8 +2,6 @@ package com.mycompany.commands;
 
 import com.mycompany.Presentation;
 import com.mycompany.PresentationFileManager;
-import com.mycompany.commands.Command;
-
 import java.awt.Frame;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -24,7 +22,6 @@ public class SavePresentationCommand implements Command {
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, "IO Exception: " + exc,
                     "Save Error", JOptionPane.ERROR_MESSAGE);
-            exc.printStackTrace(); // Optional: helps during development
         }
     }
 }
