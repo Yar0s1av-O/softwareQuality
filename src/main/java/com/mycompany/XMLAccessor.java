@@ -25,6 +25,7 @@ public class XMLAccessor extends Accessor {
             Document document = builder.parse(new File(filename));
             Element root = document.getDocumentElement();
 
+            presentation.clear();
             presentation.setTitle(getTextContent(root, SHOWTITLE));
 
             NodeList slides = root.getElementsByTagName(SLIDE);
