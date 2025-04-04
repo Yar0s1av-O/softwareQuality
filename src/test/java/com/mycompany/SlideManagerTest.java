@@ -6,31 +6,36 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SlideManagerTest {
+class SlideManagerTest
+{
 
     private SlideManager manager;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         manager = new SlideManager();
     }
 
     @Test
-    void testAddSlideIncreasesSize() {
+    void testAddSlideIncreasesSize()
+    {
         Slide slide = new Slide();
         manager.addSlide(slide);
         assertEquals(1, manager.getSize());
     }
 
     @Test
-    void testClearSlidesEmptiesManager() {
+    void testClearSlidesEmptiesManager()
+    {
         manager.addSlide(new Slide());
         manager.clear();
         assertEquals(0, manager.getSize());
     }
 
     @Test
-    void testNavigationNextAndPrevious() {
+    void testNavigationNextAndPrevious()
+    {
         manager.addSlide(new Slide());
         manager.addSlide(new Slide());
         manager.setCurrentIndex(0);

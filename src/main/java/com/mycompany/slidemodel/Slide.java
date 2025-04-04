@@ -28,7 +28,9 @@ public class Slide
 
     public void append(SlideItem anItem)
     {
-        items.addElement(anItem);
+        if (anItem != null) {
+            items.addElement(anItem);
+        }
     }
 
     public String getTitle()
