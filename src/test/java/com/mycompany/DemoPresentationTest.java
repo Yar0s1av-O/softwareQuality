@@ -8,7 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class DemoPresentationTest {
 
     @Test
-    void testLoadDemoPresentationAddsSlides() {
+    void testLoadDemoPresentationAddsSlides()
+    {
         DemoPresentation demo = new DemoPresentation();
         Presentation presentation = new Presentation();
 
@@ -30,11 +31,13 @@ class DemoPresentationTest {
     }
 
     @Test
-    void testSaveFileThrowsException() {
+    void testSaveFileThrowsException()
+    {
         DemoPresentation demo = new DemoPresentation();
         Presentation presentation = new Presentation();
 
-        Exception exception = assertThrows(IllegalStateException.class, () -> {
+        Exception exception = assertThrows(IllegalStateException.class, () ->
+        {
             demo.saveFile(presentation, "shouldFail");
         });
 

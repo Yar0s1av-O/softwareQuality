@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-class NextSlideCommandTest {
+class NextSlideCommandTest
+{
 
     private Presentation mockPresentation;
     private NextSlideCommand command;

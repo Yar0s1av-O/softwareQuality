@@ -6,23 +6,27 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PresentationTest {
+class PresentationTest
+{
 
     private Presentation presentation;
 
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         presentation = new Presentation();
     }
 
     @Test
-    void testSetAndGetTitle() {
+    void testSetAndGetTitle()
+    {
         presentation.setTitle("My Presentation");
         assertEquals("My Presentation", presentation.getTitle(), "Title should be correctly set and retrieved");
     }
 
     @Test
-    void testAppendSlideAndGetSize() {
+    void testAppendSlideAndGetSize()
+    {
         Slide slide1 = new Slide();
         Slide slide2 = new Slide();
 
@@ -33,7 +37,8 @@ class PresentationTest {
     }
 
     @Test
-    void testGetSlideByIndex() {
+    void testGetSlideByIndex()
+    {
         Slide slide = new Slide();
         slide.setTitle("Intro Slide");
 
@@ -45,7 +50,8 @@ class PresentationTest {
     }
 
     @Test
-    void testClearPresentation() {
+    void testClearPresentation()
+    {
         presentation.append(new Slide());
         presentation.append(new Slide());
 
@@ -56,7 +62,8 @@ class PresentationTest {
     }
 
     @Test
-    void testCurrentSlideTracking() {
+    void testCurrentSlideTracking()
+    {
         Slide slide1 = new Slide();
         Slide slide2 = new Slide();
 
@@ -71,7 +78,8 @@ class PresentationTest {
     }
 
     @Test
-    void testNextAndPreviousSlideNavigation() {
+    void testNextAndPreviousSlideNavigation()
+    {
         Slide slide1 = new Slide();
         Slide slide2 = new Slide();
         Slide slide3 = new Slide();
@@ -89,7 +97,8 @@ class PresentationTest {
     }
 
     @Test
-    void testNavigationLimits() {
+    void testNavigationLimits()
+    {
         Slide slide1 = new Slide();
         presentation.append(slide1);
 
