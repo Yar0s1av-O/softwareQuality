@@ -31,26 +31,31 @@ public class XMLAccessor extends Accessor
             presentation.setTitle(getTextContent(root, SHOWTITLE));
             NodeList slides = root.getElementsByTagName(SLIDE);
 
-            for (int i = 0; i < slides.getLength(); i++)
-            {
-                Element slideElement = (Element) slides.item(i);
-                Slide slide = new Slide();
-                slide.setTitle(getTextContent(slideElement, SLIDETITLE));
-                NodeList slideItems = slideElement.getElementsByTagName(ITEM);
-
-                for (int j = 0; j < slideItems.getLength(); j++)
-                {
-                    Element item = (Element) slideItems.item(j);
-                    loadSlideItem(slide, item);
-                }
-
-                presentation.append(slide);
-            }
+            addSlidesToPresentation(presentation, slides);
 
 
         } catch (ParserConfigurationException | SAXException e)
         {
             throw new IOException("Error parsing XML: " + e.getMessage());
+        }
+    }
+
+    private void addSlidesToPresentation(Presentation presentation, NodeList slides)
+    {
+        for (int i = 0; i < slides.getLength(); i++)
+        {
+            Element slideElement = (Element) slides.item(i);
+            Slide slide = new Slide();
+            slide.setTitle(getTextContent(slideElement, SLIDETITLE));
+            NodeList slideItems = slideElement.getElementsByTagName(ITEM);
+
+            for (int j = 0; j < slideItems.getLength(); j++)
+            {
+                Element item = (Element) slideItems.item(j);
+                loadSlideItem(slide, item);
+            }
+
+            presentation.append(slide);
         }
     }
 
@@ -94,31 +99,36 @@ public class XMLAccessor extends Accessor
             writer.println("<presentation>");
             writer.println("  <showtitle>" + presentation.getTitle() + "</showtitle>");
 
-            for (int i = 0; i < presentation.getSize(); i++)
-            {
-                Slide slide = presentation.getSlide(i);
-                writer.println("  <slide>");
-                writer.println("    <title>" + slide.getTitle() + "</title>");
-
-                Vector<SlideItem> items = slide.getSlideItems();
-                for (SlideItem item : items)
-                {
-                    if (item instanceof TextItem)
-                    {
-                        writer.println("    <item kind=\"text\" level=\"" + item.getLevel() + "\">" +
-                                ((TextItem) item).getText() + "</item>");
-                    }
-                    else if (item instanceof BitmapItem)
-                    {
-                        writer.println("    <item kind=\"image\" level=\"" + item.getLevel() + "\">" +
-                                ((BitmapItem) item).getName() + "</item>");
-                    }
-                }
-
-                writer.println("  </slide>");
-            }
+            printSlides(presentation, writer);
 
             writer.println("</presentation>");
+        }
+    }
+
+    private static void printSlides(Presentation presentation, PrintWriter writer)
+    {
+        for (int i = 0; i < presentation.getSize(); i++)
+        {
+            Slide slide = presentation.getSlide(i);
+            writer.println("  <slide>");
+            writer.println("    <title>" + slide.getTitle() + "</title>");
+
+            Vector<SlideItem> items = slide.getSlideItems();
+            for (SlideItem item : items)
+            {
+                if (item instanceof TextItem)
+                {
+                    writer.println("    <item kind=\"text\" level=\"" + item.getLevel() + "\">" +
+                            ((TextItem) item).getText() + "</item>");
+                }
+                else if (item instanceof BitmapItem)
+                {
+                    writer.println("    <item kind=\"image\" level=\"" + item.getLevel() + "\">" +
+                            ((BitmapItem) item).getName() + "</item>");
+                }
+            }
+
+            writer.println("  </slide>");
         }
     }
 }
