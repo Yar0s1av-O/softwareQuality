@@ -6,11 +6,6 @@ public class CommandInvoker
 {
     private final Map<String, Command> commandMap = new HashMap<>();
 
-    public Map<String, Command> getCommandMap()
-    {
-        return this.commandMap;
-    }
-
     public void register(String name, Command command)
     {
         commandMap.put(name, command);
