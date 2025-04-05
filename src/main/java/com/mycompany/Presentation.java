@@ -78,7 +78,14 @@ public class Presentation implements MyPublisher
     public void append(Slide slide)
     {
         slideManager.addSlide(slide);
+
+        // Automatically set to first slide if this is the first one
+        if (slideManager.getSize() == 1) {
+            setSlideNumber(0); // triggers notifyObservers too
+        }
     }
+
+
 
     public Slide getSlide(int number)
     {

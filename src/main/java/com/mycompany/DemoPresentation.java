@@ -10,7 +10,7 @@ import com.mycompany.slidemodel.Slide;
  * @version 1.6 2014/05/16 Sylvia Stuurman
  */
 
-class DemoPresentation extends Accessor
+public class DemoPresentation extends Accessor
 {
 
     @Override
