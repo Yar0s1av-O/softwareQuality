@@ -1,10 +1,13 @@
 package com.mycompany.commands;
 
+import com.mycompany.Presentation;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class CommandInvokerTest
 {
@@ -27,5 +30,15 @@ class CommandInvokerTest
         CommandInvoker commandInvoker = new CommandInvoker();
 
         assertDoesNotThrow(()->{commandInvoker.execute("show");});
+    }
+
+    @Test
+    void execute_command_doesNotThrow(){
+        Presentation presentation = mock(Presentation.class);
+        Command goToCommand = new GoToSlideCommand(presentation, 2);
+        CommandInvoker commandInvoker = new CommandInvoker();
+        commandInvoker.register("goToTwo",goToCommand);
+
+        Assertions.assertDoesNotThrow(()->{commandInvoker.execute("goToTwo");});
     }
 }
