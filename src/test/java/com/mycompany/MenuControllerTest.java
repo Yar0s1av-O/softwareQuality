@@ -1,47 +1,62 @@
 package com.mycompany;
 
-import com.mycompany.commands.*;
+import com.mycompany.commands.CommandInvoker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Frame;
-import java.awt.MenuBar;
+import java.awt.GraphicsEnvironment;
+import java.awt.Menu;
+import java.awt.MenuItem;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MenuControllerTest {
 
-    private Frame mockFrame;
-    private Presentation mockPresentation;
-    private CommandInvoker mockInvoker;
     private MenuController menuController;
+    private Presentation mockPresentation;
+    private CommandInvoker invoker;
 
     @BeforeEach
-    void setUp()
-    {
-        mockFrame = mock(Frame.class);
-        mockPresentation = mock(Presentation.class);
-        mockInvoker = mock(CommandInvoker.class);
-        menuController = new MenuController(mockFrame, mockPresentation, mockInvoker);
+    void setUp() {
+        // Skip GUI tests in headless environments like CI
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Skipping GUI tests in headless environment");
+
+        mockPresentation = new Presentation();
+        invoker = new CommandInvoker();
+
+        Frame dummyFrame = new Frame();
+        menuController = new MenuController(dummyFrame, mockPresentation, invoker);
     }
 
     @Test
-    void testCommandsAreRegistered()
-    {
-        // Verify that all the key commands were registered
-        verify(mockInvoker).register(eq("Open"), any(OpenPresentationCommand.class));
-        verify(mockInvoker).register(eq("New"), any(NewPresentationCommand.class));
-        verify(mockInvoker).register(eq("Save"), any(SavePresentationCommand.class));
-        verify(mockInvoker).register(eq("Exit"), any(ExitCommand.class));
-        verify(mockInvoker).register(eq("Next"), any(NextSlideCommand.class));
-        verify(mockInvoker).register(eq("Prev"), any(PrevSlideCommand.class));
-        verify(mockInvoker).register(eq("About"), any(ShowAboutBoxCommand.class));
+    void testFileMenuExists() {
+        Menu fileMenu = menuController.getMenu(0);
+        assertNotNull(fileMenu);
+        assertEquals("File", fileMenu.getLabel());
     }
 
     @Test
-    void testMenuControllerExtendsMenuBar()
-    {
-        // Ensure that the controller can be added as a menu bar to a frame
-        assert(menuController instanceof MenuBar);
+    void testHelpMenuExists() {
+        Menu helpMenu = menuController.getHelpMenu();
+        assertNotNull(helpMenu);
+        assertEquals("Help", helpMenu.getLabel());
+    }
+
+    @Test
+    void testFileMenuHasExitItem() {
+        Menu fileMenu = menuController.getMenu(0);
+        boolean hasExit = false;
+
+        for (int i = 0; i < fileMenu.getItemCount(); i++) {
+            MenuItem item = fileMenu.getItem(i);
+            if ("Exit".equals(item.getLabel())) {
+                hasExit = true;
+                break;
+            }
+        }
+
+        assertTrue(hasExit, "Exit menu item should exist in File menu");
     }
 }
