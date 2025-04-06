@@ -88,8 +88,8 @@
                         <include>**/*Test.java</include>
                     </includes>
                 </configuration>
-
             </plugin>
+
 
             <!-- JaCoCo Code Coverage -->
             <plugin>

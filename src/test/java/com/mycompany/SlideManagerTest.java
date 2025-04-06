@@ -12,40 +12,58 @@ class SlideManagerTest
     private SlideManager manager;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         manager = new SlideManager();
     }
 
     @Test
-    void testAddSlideIncreasesSize()
-    {
-        Slide slide = new Slide();
-        manager.addSlide(slide);
-        assertEquals(1, manager.getSize());
+    void testAddSlideAndSize() {
+        Slide s1 = new Slide();
+        Slide s2 = new Slide();
+        manager.addSlide(s1);
+        manager.addSlide(s2);
+
+        assertEquals(2, manager.getSize());
     }
 
     @Test
-    void testClearSlidesEmptiesManager()
+    void testSetAndGetCurrentSlide()
     {
-        manager.addSlide(new Slide());
-        manager.clear();
-        assertEquals(0, manager.getSize());
+        Slide s1 = new Slide();
+        Slide s2 = new Slide();
+        manager.addSlide(s1);
+        manager.addSlide(s2);
+
+        manager.setCurrentIndex(1);
+        assertEquals(s2, manager.getCurrentSlide());
     }
 
     @Test
-    void testNavigationNextAndPrevious()
+    void testSlideNavigation()
     {
         manager.addSlide(new Slide());
         manager.addSlide(new Slide());
+
         manager.setCurrentIndex(0);
-
         assertTrue(manager.hasNext());
-        manager.nextSlide();
-        assertEquals(1, manager.getCurrentIndex());
+        assertFalse(manager.hasPrevious());
 
+        manager.nextSlide();
+        assertFalse(manager.hasNext());
         assertTrue(manager.hasPrevious());
+
         manager.prevSlide();
         assertEquals(0, manager.getCurrentIndex());
+    }
+
+    @Test
+    void testClearSlides()
+    {
+        manager.addSlide(new Slide());
+        manager.setCurrentIndex(0);
+        manager.clear();
+
+        assertEquals(0, manager.getSize());
+        assertNull(manager.getCurrentSlide());
     }
 }
