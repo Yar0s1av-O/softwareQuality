@@ -3,6 +3,8 @@ package com.mycompany;
 import com.mycompany.slidemodel.BitmapItem;
 import com.mycompany.slidemodel.Slide;
 
+import java.io.IOException;
+
 /**
  * A built in demo-presentation
  *
@@ -61,8 +63,9 @@ public class DemoPresentation extends Accessor
     }
 
     @Override
-    public void saveFile(Presentation presentation, String unusedFilename)
+    public void saveFile(Presentation p, String fn) throws IOException
     {
-        throw new IllegalStateException("Save As->Demo! called");
+        throw new UnsupportedOperationException("Save not supported for demo presentation");
     }
+
 }
