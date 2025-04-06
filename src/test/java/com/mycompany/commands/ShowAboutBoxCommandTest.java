@@ -12,7 +12,7 @@ public class ShowAboutBoxCommandTest
 {
     @Test
     void ShowAboutBoxCommand_doesNotThrow(){
-        Frame frame = new Frame();
+        Frame frame = mock(Frame.class);
 
         Assertions.assertDoesNotThrow(()->{new ShowAboutBoxCommand(frame);});
     }

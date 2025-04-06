@@ -12,7 +12,7 @@ public class OpenPresentationCommandTest
     @Test
     void openPresentationCommand_doesNotThrow(){
         Presentation presentation = mock(Presentation.class);
-        Frame frame = new Frame();
+        Frame frame = mock(Frame.class);
 
         Assertions.assertDoesNotThrow(()->{new OpenPresentationCommand(presentation, frame);});
     }

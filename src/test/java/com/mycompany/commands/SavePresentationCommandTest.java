@@ -12,7 +12,7 @@ public class SavePresentationCommandTest
     @Test
     void savePresentationCommand_doesNotThrow(){
         Presentation presentation = mock(Presentation.class);
-        Frame frame = new Frame();
+        Frame frame = mock(Frame.class);
 
         Assertions.assertDoesNotThrow(()->{new SavePresentationCommand(presentation, frame);});
     }
@@ -20,7 +20,7 @@ public class SavePresentationCommandTest
     @Test
     void execute(){
         Presentation presentation = mock(Presentation.class);
-        Frame frame = new Frame();
+        Frame frame = mock(Frame.class);
         Command command = new SavePresentationCommand(presentation, frame);
 
         Assertions.assertDoesNotThrow(()->{command.execute();});
