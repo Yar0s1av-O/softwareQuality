@@ -1,13 +1,8 @@
-package com.mycompany;
+package com.mycompany.slidemodel;
 
-import com.mycompany.slidemodel.Slide;
-import com.mycompany.slidemodel.SlideItem;
-import com.mycompany.slidemodel.TextItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,6 +1,7 @@
-package com.mycompany.slidemodel;
+package com.mycompany.commands;
 
 import com.mycompany.Presentation;
+import com.mycompany.slidemodel.Slide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
