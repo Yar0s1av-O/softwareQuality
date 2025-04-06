@@ -12,7 +12,7 @@ public class GoToSlideCommandTest
     @Test
     void GoToSlideCommand_noExceptions(){
         Presentation mockPresentation = mock(Presentation.class);
-        Assertions.assertDoesNotThrow(()-> {GoToSlideCommand command = new GoToSlideCommand(mockPresentation, 1);});
+        Assertions.assertDoesNotThrow(()-> {new GoToSlideCommand(mockPresentation, 1);});
     }
 
     @Test

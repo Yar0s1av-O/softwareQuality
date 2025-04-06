@@ -11,7 +11,7 @@ public class NewPresentationCommandTest
     @Test
     void newPresentationCommand_doesNotThrow(){
         Presentation presentation = mock(Presentation.class);
-        Assertions.assertDoesNotThrow(()->{Command command = new NewPresentationCommand(presentation);});
+        Assertions.assertDoesNotThrow(()->{new NewPresentationCommand(presentation);});
     }
 
     @Test
