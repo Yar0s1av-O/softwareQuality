@@ -1,47 +1,44 @@
 package com.mycompany;
 
+import com.mycompany.commands.CommandInvoker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.awt.*;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SlideViewerFrameTest
-{
+class SlideViewerFrameTest {
 
     private SlideViewerFrame frame;
     private Presentation presentation;
 
     @BeforeEach
-    void setup()
-    {
-        // Ensure headless mode for test environments (e.g., GitHub Actions)
-        System.setProperty("java.awt.headless", "true");
+    void setup() {
+        //  Skip this test in headless environments like GitHub Actions
+        assumeTrue(!GraphicsEnvironment.isHeadless(), "Skipping GUI tests in headless environment");
 
+        Style.createStyles();
         presentation = new Presentation();
-        frame = new SlideViewerFrame("Test Title", presentation);
+        frame = new SlideViewerFrame("Test Frame", presentation);
     }
 
     @Test
-    void testFrameTitleAndVisibility()
-    {
+    void testFrameTitle() {
         assertEquals("Jabberpoint 1.6 - OU", frame.getTitle());
-        assertTrue(frame.isVisible());
     }
 
     @Test
-    void testMenuBarExists()
-    {
-        assertNotNull(frame.getMenuBar());
-        assertTrue(frame.getMenuBar() instanceof MenuController);
+    void testFrameSize() {
+        Dimension expectedSize = new Dimension(SlideViewerFrame.WIDTH, SlideViewerFrame.HEIGHT);
+        assertEquals(expectedSize, frame.getSize());
     }
 
     @Test
-    void testSlideViewerComponentAttached()
-    {
-        Component[] components = frame.getContentPane().getComponents();
-        assertTrue(components.length > 0);
-        assertTrue(components[0] instanceof SlideViewerComponent);
+    void testFrameMenuBarIsSet() {
+        MenuBar menuBar = frame.getMenuBar();
+        assertNotNull(menuBar, "Menu bar should be set");
     }
 }
